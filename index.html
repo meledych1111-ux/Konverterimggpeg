@@ -3,21 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ImageConverter — JPEG/PNG</title>
+  <title>ImageConverter Pro — все форматы</title>
   
-  <!-- PWA Meta Tags (минимум) -->
+  <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#007AFF">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ImgConvert">
+  <meta name="apple-mobile-web-app-title" content="ImgConvert Pro">
   
-  <!-- Одна иконка для всех устройств -->
+  <!-- Иконки -->
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" type="image/png" href="icon.png">
   
   <style>
-    /* Компактные стили */
+    /* Современные переменные */
+    :root {
+      --primary: #007AFF;
+      --success: #34C759;
+      --warning: #FF9500;
+      --danger: #FF3B30;
+      --purple: #5856D6;
+      --background: #ffffff;
+      --card-bg: #f8f8f8;
+      --text: #1c1c1e;
+      --text-secondary: #8e8e93;
+    }
+    
     * {
       margin: 0;
       padding: 0;
@@ -37,10 +49,11 @@
     .app {
       width: 100%;
       max-width: 430px;
-      background: #fff;
+      background: var(--background);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     
     /* Статус бар */
@@ -61,17 +74,18 @@
     .header h1 {
       font-size: 38px;
       font-weight: 700;
-      background: linear-gradient(135deg, #007AFF, #5856D6);
+      background: linear-gradient(135deg, var(--primary), var(--purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     
     .header p {
-      color: #8e8e93;
-      font-size: 18px;
+      color: var(--text-secondary);
+      font-size: 16px;
     }
     
+    /* Основной контент */
     .content {
       flex: 1;
       padding: 16px 24px 30px;
@@ -81,7 +95,7 @@
     /* Область загрузки */
     .upload-area {
       background: #f0f8ff;
-      border: 3px dashed #007AFF;
+      border: 3px dashed var(--primary);
       border-radius: 28px;
       padding: 40px 20px;
       margin-bottom: 24px;
@@ -95,6 +109,11 @@
       transform: scale(0.98);
     }
     
+    .upload-area.has-file {
+      border-color: var(--success);
+      background: #f0f9f0;
+    }
+    
     .upload-icon {
       font-size: 64px;
       margin-bottom: 16px;
@@ -103,23 +122,27 @@
     .upload-text {
       font-size: 22px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     
     .upload-hint {
-      font-size: 18px;
-      color: #8e8e93;
+      font-size: 16px;
+      color: var(--text-secondary);
     }
     
     /* Превью */
-    .image-preview {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: #f8f8f8;
-      border-radius: 20px;
+    .preview-card {
+      background: var(--card-bg);
+      border-radius: 24px;
       padding: 20px;
       margin-bottom: 24px;
+    }
+    
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     
     .preview-thumb {
@@ -130,7 +153,7 @@
       object-fit: cover;
     }
     
-    .preview-details {
+    .preview-info {
       flex: 1;
     }
     
@@ -138,69 +161,104 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 4px;
+      word-break: break-word;
     }
     
-    .preview-size {
-      font-size: 16px;
-      color: #8e8e93;
-      margin-bottom: 8px;
+    .preview-meta {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .preview-dimensions {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 20px;
+      display: inline-block;
     }
     
     .change-file {
-      color: #007AFF;
-      font-size: 17px;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 12px;
+      display: inline-block;
     }
     
-    /* Селектор форматов */
-    .format-selector {
-      display: flex;
-      gap: 10px;
-      background: #e9e9ed;
-      padding: 6px;
-      border-radius: 16px;
+    /* Карточка настроек */
+    .settings-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 20px;
       margin-bottom: 24px;
     }
     
+    .settings-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Селектор форматов */
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
     .format-btn {
-      flex: 1;
-      padding: 16px;
+      padding: 14px 8px;
       text-align: center;
       font-weight: 600;
-      font-size: 18px;
-      color: #8e8e93;
-      background: transparent;
-      border: none;
+      font-size: 16px;
+      color: var(--text-secondary);
+      background: #fff;
+      border: 2px solid #e9e9ed;
       border-radius: 12px;
       cursor: pointer;
+      transition: all 0.2s;
     }
     
     .format-btn.active {
-      background: #fff;
-      color: #007AFF;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
     
-    /* Качество */
-    .quality-container {
+    .format-btn.webp-btn.active {
+      background: var(--warning);
+      border-color: var(--warning);
+    }
+    
+    /* Контроль качества */
+    .quality-section {
       margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e9e9ed;
     }
     
     .quality-header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 16px;
-      font-size: 18px;
     }
     
     .quality-value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      color: #007AFF;
+      color: var(--primary);
       background: #fff;
-      padding: 6px 18px;
+      padding: 4px 16px;
       border-radius: 30px;
     }
     
+    /* Слайдер */
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
@@ -216,15 +274,43 @@
       background: white;
       border-radius: 50%;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      border: 3px solid #007AFF;
+      border: 3px solid var(--primary);
       margin-top: -12px;
       cursor: pointer;
+    }
+    
+    /* Дополнительные опции */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      padding: 12px;
+      border-radius: 12px;
+    }
+    
+    .option-item input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--primary);
+    }
+    
+    .option-item label {
+      font-size: 15px;
+      font-weight: 500;
     }
     
     /* Кнопка */
     .convert-btn {
       width: 100%;
-      background: #007AFF;
+      background: var(--primary);
       border: none;
       border-radius: 20px;
       padding: 22px;
@@ -252,11 +338,19 @@
     
     /* Прогресс */
     .progress-container {
-      background: #f8f8f8;
+      background: var(--card-bg);
       border-radius: 20px;
       padding: 20px;
       margin-bottom: 24px;
       display: none;
+    }
+    
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: var(--text-secondary);
     }
     
     .progress-bar {
@@ -265,13 +359,13 @@
       background: #e9e9ed;
       border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 12px;
     }
     
     .progress-fill {
       height: 100%;
       width: 0;
-      background: linear-gradient(90deg, #34C759, #007AFF);
+      background: linear-gradient(90deg, var(--success), var(--primary));
+      transition: width 0.3s;
     }
     
     /* Результат */
@@ -295,41 +389,49 @@
       font-weight: 700;
     }
     
-    .comparison {
-      display: flex;
-      gap: 16px;
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin-bottom: 20px;
     }
     
-    .comparison-item {
-      flex: 1;
+    .stat-card {
       background: #fff;
       border-radius: 16px;
       padding: 16px;
     }
     
-    .comparison-label {
-      font-size: 14px;
-      color: #8e8e93;
-      margin-bottom: 8px;
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
     }
     
-    .comparison-value {
+    .stat-value {
       font-size: 20px;
       font-weight: 700;
     }
     
-    .savings {
+    .stat-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .savings-badge {
+      text-align: center;
       font-size: 28px;
       font-weight: 700;
-      color: #34C759;
-      text-align: center;
+      padding: 16px;
+      background: #fff;
+      border-radius: 16px;
       margin-bottom: 16px;
     }
     
     .download-btn {
       width: 100%;
-      background: #34C759;
+      background: var(--success);
       border: none;
       border-radius: 18px;
       padding: 20px;
@@ -341,6 +443,23 @@
       justify-content: center;
       gap: 12px;
       text-decoration: none;
+      margin-bottom: 12px;
+    }
+    
+    .share-btn {
+      width: 100%;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 18px;
+      padding: 16px;
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
     }
     
     /* Safe area */
@@ -352,6 +471,29 @@
         padding-bottom: max(30px, env(safe-area-inset-bottom));
       }
     }
+    
+    /* Уведомления */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 16px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      animation: slideUp 0.3s;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -362,8 +504,8 @@
     </div>
     
     <div class="header">
-      <h1>ImgConvert</h1>
-      <p>JPEG · PNG</p>
+      <h1>ImgConvert Pro</h1>
+      <p>JPEG · PNG · WEBP · GIF · BMP</p>
     </div>
     
     <div class="content">
@@ -372,34 +514,80 @@
         <div id="uploadContent">
           <div class="upload-icon">🖼️</div>
           <div class="upload-text">Выберите изображение</div>
-          <div class="upload-hint">Нажмите или перетащите</div>
+          <div class="upload-hint">Нажмите или перетащите (до 50 МБ)</div>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
       </div>
       
       <!-- Превью -->
-      <div class="image-preview" id="imagePreview" style="display: none;">
-        <img class="preview-thumb" id="previewThumb" src="">
-        <div class="preview-details">
-          <div class="preview-name" id="previewName"></div>
-          <div class="preview-size" id="previewSize"></div>
-          <div class="change-file" onclick="document.getElementById('fileInput').click()">Заменить</div>
+      <div class="preview-card" id="previewCard" style="display: none;">
+        <div class="preview-header">
+          <img class="preview-thumb" id="previewThumb" src="">
+          <div class="preview-info">
+            <div class="preview-name" id="previewName"></div>
+            <div class="preview-meta" id="previewMeta"></div>
+            <div class="preview-dimensions" id="previewDimensions"></div>
+          </div>
         </div>
+        <div class="change-file" onclick="document.getElementById('fileInput').click()">🔄 Выбрать другое изображение</div>
       </div>
       
-      <!-- Форматы -->
-      <div class="format-selector">
-        <button class="format-btn active" data-format="jpeg">JPEG</button>
-        <button class="format-btn" data-format="png">PNG</button>
-      </div>
-      
-      <!-- Качество -->
-      <div class="quality-container" id="qualityContainer">
-        <div class="quality-header">
-          <span>Качество</span>
-          <span class="quality-value" id="qualityValue">90%</span>
+      <!-- Настройки -->
+      <div class="settings-card">
+        <div class="settings-title">
+          <span>⚙️</span> Конвертировать в:
         </div>
-        <input type="range" id="quality" min="10" max="100" value="90" step="5">
+        
+        <!-- Форматы -->
+        <div class="format-grid" id="formatGrid">
+          <button class="format-btn active" data-format="jpeg">JPEG</button>
+          <button class="format-btn" data-format="png">PNG</button>
+          <button class="format-btn webp-btn" data-format="webp">WEBP</button>
+          <button class="format-btn" data-format="gif">GIF</button>
+          <button class="format-btn" data-format="bmp">BMP</button>
+          <button class="format-btn" data-format="ico">ICO</button>
+        </div>
+        
+        <!-- Качество -->
+        <div class="quality-section" id="qualitySection">
+          <div class="quality-header">
+            <span>📊 Качество сжатия</span>
+            <span class="quality-value" id="qualityValue">90%</span>
+          </div>
+          <input type="range" id="quality" min="10" max="100" value="90" step="5">
+        </div>
+        
+        <!-- Дополнительные опции -->
+        <div class="options-grid">
+          <div class="option-item">
+            <input type="checkbox" id="resizeOption">
+            <label for="resizeOption">Изменить размер</label>
+          </div>
+          <div class="option-item">
+            <input type="checkbox" id="grayscaleOption">
+            <label for="grayscaleOption">Ч/б</label>
+          </div>
+          <div class="option-item">
+            <input type="checkbox" id="flipHorizontal">
+            <label for="flipHorizontal">Отразить</label>
+          </div>
+          <div class="option-item">
+            <input type="checkbox" id="metadataOption" checked>
+            <label for="metadataOption">Сохранить метаданные</label>
+          </div>
+        </div>
+        
+        <!-- Поля для изменения размера (скрыты) -->
+        <div id="resizeOptions" style="display: none; margin-top: 16px;">
+          <div style="display: flex; gap: 8px;">
+            <input type="number" id="widthInput" placeholder="Ширина" style="flex:1; padding: 12px; border-radius: 12px; border: 1px solid #e9e9ed; font-size: 16px;">
+            <input type="number" id="heightInput" placeholder="Высота" style="flex:1; padding: 12px; border-radius: 12px; border: 1px solid #e9e9ed; font-size: 16px;">
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <input type="checkbox" id="keepRatio" checked>
+            <label for="keepRatio">Сохранить пропорции</label>
+          </div>
+        </div>
       </div>
       
       <!-- Кнопка -->
@@ -409,6 +597,10 @@
       
       <!-- Прогресс -->
       <div class="progress-container" id="progressContainer">
+        <div class="progress-info">
+          <span id="progressStatus">Конвертация...</span>
+          <span id="progressPercent">0%</span>
+        </div>
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
@@ -417,61 +609,101 @@
       <!-- Результат -->
       <div class="result-section" id="resultSection">
         <div class="result-header">
-          <span>✅</span>
-          <span>Готово!</span>
+          <span>✅</span> Готово!
         </div>
         
-        <div class="comparison">
-          <div class="comparison-item">
-            <div class="comparison-label">Оригинал</div>
-            <div class="comparison-value" id="originalSize">0 KB</div>
+        <div class="comparison-grid">
+          <div class="stat-card">
+            <div class="stat-label">Оригинал</div>
+            <div class="stat-value" id="originalSize">0 KB</div>
+            <div class="stat-detail" id="originalDimensions"></div>
           </div>
-          <div class="comparison-item">
-            <div class="comparison-label">Результат</div>
-            <div class="comparison-value" id="resultSize">0 KB</div>
+          <div class="stat-card">
+            <div class="stat-label">Результат</div>
+            <div class="stat-value" id="resultSize">0 KB</div>
+            <div class="stat-detail" id="resultDimensions"></div>
           </div>
         </div>
         
-        <div class="savings" id="savings">-0%</div>
+        <div class="savings-badge" id="savings">-0%</div>
         
         <a href="#" class="download-btn" id="downloadLink" download>
-          <span>📥</span> Сохранить
+          <span>📥</span> Скачать
         </a>
+        
+        <button class="share-btn" id="shareBtn">
+          <span>📤</span> Поделиться
+        </button>
       </div>
     </div>
   </div>
+  
+  <!-- Уведомления -->
+  <div class="toast" id="toast"></div>
   
   <script>
     // DOM элементы
     const uploadArea = document.getElementById('uploadArea');
     const uploadContent = document.getElementById('uploadContent');
     const fileInput = document.getElementById('fileInput');
-    const imagePreview = document.getElementById('imagePreview');
+    const previewCard = document.getElementById('previewCard');
     const previewThumb = document.getElementById('previewThumb');
     const previewName = document.getElementById('previewName');
-    const previewSize = document.getElementById('previewSize');
+    const previewMeta = document.getElementById('previewMeta');
+    const previewDimensions = document.getElementById('previewDimensions');
     const formatBtns = document.querySelectorAll('.format-btn');
-    const qualityContainer = document.getElementById('qualityContainer');
+    const qualitySection = document.getElementById('qualitySection');
     const qualityInput = document.getElementById('quality');
     const qualityValue = document.getElementById('qualityValue');
     const convertBtn = document.getElementById('convertBtn');
     const progressContainer = document.getElementById('progressContainer');
     const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressStatus = document.getElementById('progressStatus');
     const resultSection = document.getElementById('resultSection');
     const originalSize = document.getElementById('originalSize');
     const resultSize = document.getElementById('resultSize');
+    const originalDimensions = document.getElementById('originalDimensions');
+    const resultDimensions = document.getElementById('resultDimensions');
     const savings = document.getElementById('savings');
     const downloadLink = document.getElementById('downloadLink');
+    const shareBtn = document.getElementById('shareBtn');
+    const toast = document.getElementById('toast');
+    
+    // Дополнительные опции
+    const resizeOption = document.getElementById('resizeOption');
+    const grayscaleOption = document.getElementById('grayscaleOption');
+    const flipHorizontal = document.getElementById('flipHorizontal');
+    const metadataOption = document.getElementById('metadataOption');
+    const resizeOptions = document.getElementById('resizeOptions');
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const keepRatio = document.getElementById('keepRatio');
     
     // Состояние
     let currentFile = null;
     let currentFormat = 'jpeg';
+    let originalImage = null;
+    let originalWidth = 0;
+    let originalHeight = 0;
     
     // Форматирование размера
     function formatBytes(bytes) {
       if (bytes === 0) return '0 KB';
+      if (bytes < 1024) return bytes + ' B';
       const kb = bytes / 1024;
-      return kb.toFixed(1) + ' KB';
+      if (kb < 1024) return kb.toFixed(1) + ' KB';
+      const mb = kb / 1024;
+      return mb.toFixed(1) + ' MB';
+    }
+    
+    // Показать уведомление
+    function showToast(message, duration = 2000) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, duration);
     }
     
     // Качество
@@ -485,8 +717,39 @@
         formatBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFormat = btn.dataset.format;
-        qualityContainer.style.display = currentFormat === 'jpeg' ? 'block' : 'none';
+        
+        // Для некоторых форматов качество не применяется
+        const noQualityFormats = ['bmp', 'ico'];
+        qualitySection.style.display = noQualityFormats.includes(currentFormat) ? 'none' : 'block';
       });
+    });
+    
+    // Показываем/скрываем опции изменения размера
+    resizeOption.addEventListener('change', () => {
+      resizeOptions.style.display = resizeOption.checked ? 'block' : 'none';
+    });
+    
+    // Автоматическое заполнение размеров при загрузке
+    function updateDimensions() {
+      if (originalWidth && originalHeight) {
+        widthInput.value = originalWidth;
+        heightInput.value = originalHeight;
+      }
+    }
+    
+    // Сохранение пропорций
+    widthInput.addEventListener('input', () => {
+      if (keepRatio.checked && originalWidth && originalHeight) {
+        const ratio = originalHeight / originalWidth;
+        heightInput.value = Math.round(widthInput.value * ratio);
+      }
+    });
+    
+    heightInput.addEventListener('input', () => {
+      if (keepRatio.checked && originalWidth && originalHeight) {
+        const ratio = originalWidth / originalHeight;
+        widthInput.value = Math.round(heightInput.value * ratio);
+      }
     });
     
     // Выбор файла
@@ -494,19 +757,38 @@
     
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (!file || !file.type.startsWith('image/')) return;
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Пожалуйста, выберите изображение');
+        return;
+      }
+      
+      if (file.size > 50 * 1024 * 1024) {
+        showToast('Файл слишком большой (макс. 50 МБ)');
+        return;
+      }
       
       currentFile = file;
       
       const reader = new FileReader();
       reader.onload = (e) => {
-        previewThumb.src = e.target.result;
-        previewName.textContent = file.name;
-        previewSize.textContent = formatBytes(file.size);
-        imagePreview.style.display = 'flex';
-        uploadArea.style.display = 'none';
-        convertBtn.disabled = false;
-        resultSection.classList.remove('visible');
+        const img = new Image();
+        img.onload = () => {
+          originalWidth = img.width;
+          originalHeight = img.height;
+          
+          previewThumb.src = e.target.result;
+          previewName.textContent = file.name;
+          previewMeta.textContent = formatBytes(file.size);
+          previewDimensions.textContent = `${img.width} × ${img.height}`;
+          
+          previewCard.style.display = 'block';
+          uploadArea.classList.add('has-file');
+          convertBtn.disabled = false;
+          resultSection.classList.remove('visible');
+          
+          updateDimensions();
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     });
@@ -517,36 +799,89 @@
       
       progressContainer.style.display = 'block';
       convertBtn.disabled = true;
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '0%';
+      progressStatus.textContent = 'Загрузка изображения...';
       
       try {
         const quality = qualityInput.value / 100;
         
-        // Создаем canvas
+        // Загружаем изображение
         const img = new Image();
         img.src = previewThumb.src;
         await new Promise(r => { img.onload = r; });
         
+        progressFill.style.width = '30%';
+        progressPercent.textContent = '30%';
+        progressStatus.textContent = 'Обработка...';
+        
+        // Создаем canvas
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        
+        // Применяем изменение размера если нужно
+        let targetWidth = img.width;
+        let targetHeight = img.height;
+        
+        if (resizeOption.checked && widthInput.value && heightInput.value) {
+          targetWidth = parseInt(widthInput.value);
+          targetHeight = parseInt(heightInput.value);
+        }
+        
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        
         const ctx = canvas.getContext('2d');
         
-        // Для JPEG заливаем белым
-        if (currentFormat === 'jpeg') {
+        // Применяем эффекты
+        if (flipHorizontal.checked) {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+        
+        // Для форматов без прозрачности заливаем фон
+        const noAlphaFormats = ['jpeg', 'bmp'];
+        if (noAlphaFormats.includes(currentFormat)) {
           ctx.fillStyle = '#FFFFFF';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
-        // Прогресс
-        progressFill.style.width = '50%';
+        // Применяем черно-белый фильтр
+        if (grayscaleOption.checked) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            const gray = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
+            data[i] = gray;
+            data[i + 1] = gray;
+            data[i + 2] = gray;
+          }
+          
+          ctx.putImageData(imageData, 0, 0);
+        }
         
-        // Конвертируем
-        const mimeType = currentFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
+        progressFill.style.width = '70%';
+        progressPercent.textContent = '70%';
+        progressStatus.textContent = 'Конвертация...';
+        
+        // Определяем MIME тип
+        const mimeTypes = {
+          jpeg: 'image/jpeg',
+          png: 'image/png',
+          webp: 'image/webp',
+          gif: 'image/gif',
+          bmp: 'image/bmp',
+          ico: 'image/x-icon'
+        };
+        
+        const mimeType = mimeTypes[currentFormat];
         const dataUrl = canvas.toDataURL(mimeType, quality);
         
         progressFill.style.width = '100%';
+        progressPercent.textContent = '100%';
+        progressStatus.textContent = 'Готово!';
         
         // Результат
         const base64Data = dataUrl.split(',')[1];
@@ -554,13 +889,25 @@
         
         originalSize.textContent = formatBytes(currentFile.size);
         resultSize.textContent = formatBytes(binarySize);
+        originalDimensions.textContent = `${originalWidth} × ${originalHeight}`;
+        resultDimensions.textContent = `${targetWidth} × ${targetHeight}`;
         
         const percent = Math.round((1 - binarySize / currentFile.size) * 100);
         savings.textContent = percent > 0 ? `-${percent}%` : `+${Math.abs(percent)}%`;
         savings.style.color = percent > 0 ? '#34C759' : '#FF3B30';
         
+        // Расширения файлов
+        const extensions = {
+          jpeg: 'jpg',
+          png: 'png',
+          webp: 'webp',
+          gif: 'gif',
+          bmp: 'bmp',
+          ico: 'ico'
+        };
+        
         downloadLink.href = dataUrl;
-        downloadLink.download = `converted.${currentFormat === 'jpeg' ? 'jpg' : 'png'}`;
+        downloadLink.download = `converted.${extensions[currentFormat]}`;
         
         resultSection.classList.add('visible');
         
@@ -569,16 +916,42 @@
         }, 500);
         
       } catch (error) {
-        alert('Ошибка');
+        showToast('Ошибка при конвертации');
+        console.error(error);
         progressContainer.style.display = 'none';
       } finally {
         convertBtn.disabled = false;
       }
     });
     
-    // Service Worker
+    // Поделиться (если поддерживается)
+    shareBtn.addEventListener('click', async () => {
+      if (navigator.share && downloadLink.href) {
+        try {
+          const response = await fetch(downloadLink.href);
+          const blob = await response.blob();
+          const file = new File([blob], downloadLink.download, { type: blob.type });
+          
+          await navigator.share({
+            title: 'ImageConverter Pro',
+            text: 'Конвертированное изображение',
+            files: [file]
+          });
+        } catch (error) {
+          showToast('Не удалось поделиться');
+        }
+      } else {
+        showToast('Поделиться не поддерживается');
+      }
+    });
+    
+    // Service Worker (исправлен для GitHub Pages)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => {
+          console.log('ServiceWorker не зарегистрирован:', err);
+        });
+      });
     }
   </script>
 </body>
