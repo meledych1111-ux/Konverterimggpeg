@@ -1,8 +1,8 @@
 {
-  "name": "Image Converter",
+  "name": "ImageConverter Pro",
   "short_name": "ImgConvert",
-  "description": "Конвертер изображений в JPEG и PNG",
-  "start_url": "/",
+  "description": "Конвертер изображений в JPEG, PNG, WEBP и другие форматы",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#007AFF",
   "theme_color": "#007AFF",
